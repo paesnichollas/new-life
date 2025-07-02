@@ -127,22 +127,17 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-5. **Popule o banco de dados com dados de exemplo**
-```bash
-python manage.py shell < populate_db.py
-```
-
-6. **Crie um superusuário (opcional)**
+5. **Crie um superusuário (opcional)**
 ```bash
 python manage.py createsuperuser
 ```
 
-7. **Execute o servidor de desenvolvimento**
+6. **Execute o servidor de desenvolvimento**
 ```bash
 python manage.py runserver
 ```
 
-8. **Acesse o site**
+7. **Acesse o site**
 - Site: http://localhost:8000
 - Admin: http://localhost:8000/admin
 
