@@ -256,7 +256,123 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
-    
-    console.log('New Life website loaded successfully! 🌱');
-});
 
+    console.log("New Life website loaded successfully! 🌱");
+
+    // Funcionalidade do modo escuro
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon = document.getElementById("themeIcon");
+    const body = document.body;
+
+    // Verificar preferência salva ou preferência do sistema
+    const savedTheme = localStorage.getItem("theme");
+    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    // Aplicar tema inicial
+    if (savedTheme === "dark" || (!savedTheme && systemPrefersDark)) {
+        enableDarkMode();
+    } else {
+        enableLightMode();
+    }
+
+    // Event listener para o toggle
+    if (themeToggle) {
+        themeToggle.addEventListener("click", function() {
+            if (body.classList.contains("dark-mode")) {
+                enableLightMode();
+                localStorage.setItem("theme", "light");
+            } else {
+                enableDarkMode();
+                localStorage.setItem("theme", "dark");
+            }
+        });
+    }
+
+    // Função para ativar modo escuro
+    function enableDarkMode() {
+        body.classList.add("dark-mode");
+        if (themeIcon) {
+            themeIcon.className = "fas fa-sun";
+        }
+        if (themeToggle) {
+            themeToggle.title = "Alternar para modo claro";
+        }
+
+        // Atualizar meta theme-color para dispositivos móveis
+        updateThemeColor("#1a1a1a");
+    }
+
+    // Função para ativar modo claro
+    function enableLightMode() {
+        body.classList.remove("dark-mode");
+        if (themeIcon) {
+            themeIcon.className = "fas fa-moon";
+        }
+        if (themeToggle) {
+            themeToggle.title = "Alternar para modo escuro";
+        }
+
+        // Atualizar meta theme-color para dispositivos móveis
+        updateThemeColor("#ffffff");
+    }
+
+    // Função para atualizar theme-color
+    function updateThemeColor(color) {
+        let themeColorMeta = document.querySelector("meta[name=\"theme-color\"]");
+        if (!themeColorMeta) {
+            themeColorMeta = document.createElement("meta");
+            themeColorMeta.name = "theme-color";
+            document.head.appendChild(themeColorMeta);
+        }
+        themeColorMeta.content = color;
+    }
+
+    // Escutar mudanças na preferência do sistema
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function(e) {
+        if (!localStorage.getItem("theme")) {
+            if (e.matches) {
+                enableDarkMode();
+            } else {
+                enableLightMode();
+            }
+        }
+    });
+
+    // Adicionar animação suave ao alternar tema
+    function addThemeTransition() {
+        const style = document.createElement("style");
+        style.textContent = `
+            * {
+                transition: background-color 0.3s ease, 
+                           color 0.3s ease, 
+                           border-color 0.3s ease,
+                           box-shadow 0.3s ease !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Remover após a transição para não afetar outras animações
+        setTimeout(() => {
+            style.remove();
+        }, 300);
+    }
+
+    // Aplicar transição ao alternar tema
+    if (themeToggle) {
+        themeToggle.addEventListener("click", addThemeTransition);
+    }
+
+    // Melhorar acessibilidade - permitir toggle com teclado
+    if (themeToggle) {
+        themeToggle.addEventListener("keydown", function(e) {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                this.click();
+            }
+        });
+    }
+
+    // Debug info
+    console.log("Modo escuro implementado com sucesso! 🌙");
+    console.log("Tema atual:", body.classList.contains("dark-mode") ? "Escuro" : "Claro");
+});
